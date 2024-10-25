@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Interpretation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f7f7;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            color: #5A2E91;
+        }
+        .interpretation {
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .symbol-button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Dream Interpretation</h1>
+        <form method="POST" class="mt-4">
+            <div class="form-group">
+                <label for="dream_description">Dream Description:</label>
+                <textarea name="dream_description" rows="5" cols="50" class="form-control" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="requested_style">Interpretation Style:</label>
+                <select name="requested_style" class="form-control" required>
+                    <option value="jungian">Jungian</option>
+                    <option value="western">Western</option>
+                    <option value="mayan">Mayan</option>
+                    <option value="indian">Indian</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Interpret</button>
+        </form>
+
+        {% if interpretation %}
+        <div class="interpretation">
+            <h2>Interpretation:</h2>
+            <pre>{{ interpretation.text }}</pre>
+            <h3>Extracted Symbols:</h3>
+            <div>
+                {% for symbol in interpretation.symbols %}
+                <button class="btn btn-info symbol-button" data-toggle="modal" data-target="#symbolModal" data-symbol="{{ symbol.name }}" data-meaning="{{ symbol.meaning }}">
+                    {{ symbol.name }}
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Symbol Modal -->
+    <div class="modal fade" id="symbolModal" tabindex="-1" role="dialog" aria-labelledby="symbolModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="symbolModalLabel">Symbol Meaning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5 id="symbolName"></h5>
+                    <p id="symbolMeaning"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Script to populate the modal with symbol information
+        $('#symbolModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var symbolName = button.data('symbol'); // Extract info from data-* attributes
+            var symbolMeaning = button.data('meaning'); // Extract info from data-* attributes
+
+            var modal = $(this);
+            modal.find('#symbolName').text(symbolName);
+            modal.find('#symbolMeaning').text(symbolMeaning);
+        });
+    </script>
+</body>
+</html>
